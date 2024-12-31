@@ -77,7 +77,7 @@ const login = async (req, res) => {
     }
 
     // Generate JWT Token
-    const token = generateToken(user._id);
+    const token = generateToken(user);
 
     
     // Set token in cookie

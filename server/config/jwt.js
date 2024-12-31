@@ -6,8 +6,8 @@ const dotenv = require("dotenv");
 dotenv.config(); // Load environment variables from .env file
 
 // Generate JWT token
-const generateToken = (userId) => {  
-  return jwt.sign({ userId }, process.env.JWT_SECRET, {
+const generateToken = (user) => {  
+  return jwt.sign({_id:  user._id }, process.env.JWT_SECRET, {
     expiresIn: process.env.JWT_EXPIRATION, // Expiry time from .env
   });
 };
