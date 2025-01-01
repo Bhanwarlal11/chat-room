@@ -82,9 +82,9 @@ const login = async (req, res) => {
     
     // Set token in cookie
     res.cookie("token", token, {
-      httpOnly: true,
+      httpOnly: false,
       secure: process.env.NODE_ENV === "production", // Use secure cookies in production
-      sameSite: "strict",
+      // sameSite: "strict",
       maxAge: COOKIE_EXPIRATION,
     });
 
@@ -120,9 +120,10 @@ const logout = (req, res) => {
 const getMyProfile = async (req, res) => {
     try {
       // Ensure user ID is attached to the request by the auth middleware
-      const userId = req.user.id;
+      const userId = req.user;
+      
       if (!userId) {
-        return res.status(401).json({success:false, message: "Unauthorized access." });
+        return res.status(401).json({success:false, message: "user not found." });
       }
 
   
@@ -137,7 +138,7 @@ const getMyProfile = async (req, res) => {
       res.status(200).json({
         success: true,
         message: "Profile fetched successfully.",
-        profile: user,
+         user,
       });
     } catch (error) {
       res.status(500).json({success:false, message: "Server error.", error: error.message });

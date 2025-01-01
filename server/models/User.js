@@ -15,7 +15,12 @@ const UserSchema = new mongoose.Schema(
     password: {
       type: String,
       required: [true, "Password is required."],
-    }
+    },
+    role: {
+      type: String,
+      enum: ["User", "Admin"], 
+      default: "User", 
+    },
   },
   {
     timestamps: true, // Automatically adds `createdAt` and `updatedAt` fields
@@ -36,7 +41,6 @@ UserSchema.pre("save", async function (next) {
 UserSchema.methods.matchPassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
-
 
 const User = mongoose.model("User", UserSchema);
 module.exports = User;

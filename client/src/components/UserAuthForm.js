@@ -30,10 +30,10 @@ function UserAuthForm() {
 
 
   useEffect(() => {
-    if (isAuthenticated && role === "user") {
-      navigate("/tickets"); 
-    } else if (isAuthenticated && role !== "user") {
-      navigate("/admin/tickets"); 
+    if (isAuthenticated && role === "User") {
+      navigate("/rooms"); 
+    } else if (isAuthenticated && role !== "User") {
+      navigate("/admin"); 
     }
   }, [isAuthenticated, role, navigate]); 
 

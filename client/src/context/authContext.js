@@ -31,6 +31,7 @@ export const AuthProvider = ({ children }) => {
         try {
           // Send a request to check if the token in cookies is valid
           const response = await getMyProfile(); // Assume this makes an API call to validate the token
+          console.log(response.data.user)
 
           if (response.data.success) {
             setIsAuthenticated(true);

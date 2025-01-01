@@ -1,7 +1,4 @@
-// alert =>> leave & join room with username
-// new-message-alert
-// new-message
-// refetch-chats
+
 
 const ALERT = 'ALERT';
 const NEW_MESSAGE_ALERT = 'NEW_MESSAGE_ALERT';

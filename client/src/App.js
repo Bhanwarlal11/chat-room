@@ -1,3 +1,44 @@
+// import React from "react";
+// import { useAuth } from "./context/authContext";
+// import {
+//   BrowserRouter as Router,
+//   Routes,
+//   Route,
+//   Navigate,
+// } from "react-router-dom";
+// import Login from "./pages/Login.js";
+// import ChatRoom from "./pages/ChatRoom.js";
+// import NotFound from "./pages/NotFound.js";
+
+
+// const App = () => {
+
+//   return (
+//     <Router>
+//       <Routes>
+//         <Route path="/" element={<Login />} />
+//         <PrivateRoute path="/rooms" element={<ChatRoom />} />
+//         <PrivateRoute path="/rooms/:chatRoomId" element={<ChatRoom />} />
+//         <Route path="*" element = {<NotFound/>}/>
+//       </Routes>
+//     </Router>
+//   );
+// };
+
+// export default App;
+
+// const PrivateRoute = ({ element, ...rest }) => {
+//   const { isAuthenticated } = useAuth(); // Get authentication state from the context
+
+//   return (
+//     <Route
+//       {...rest}
+//       element={isAuthenticated ? element : <Navigate to="/" />} // If authenticated, show element else redirect to login page
+//     />
+//   );
+// };
+
+
 import React from "react";
 import { useAuth } from "./context/authContext";
 import {
@@ -6,81 +47,19 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-import Login from './pages/Login.js'
+import Login from "./pages/Login.js";
 import ChatRoom from "./pages/ChatRoom.js";
-
+import NotFound from "./pages/NotFound.js";
 
 const App = () => {
-  const { isAuthenticated, role } = useAuth();
-
   return (
     <Router>
       <Routes>
-        {/* Public Routes */}
         <Route path="/" element={<Login />} />
-        {/* <Route path="/admin/login" element={<AdminLogin />} /> */}
-        <Route path="/rooms" element={<ChatRoom/>} />
-
-        {/* Default Route */}
-        {/* <Route
-          path="/"
-          element={
-            isAuthenticated ? (
-              role === "user" ? (
-                <Navigate to="/login" /> // Redirect to login if role is "user"
-              ) : role === "admin" ||
-                role === "manager" ||
-                role === "teamMember" ? (
-                <Navigate to="/admin" /> // Redirect to admin if role is "admin" or other roles
-              ) : null
-            ) : (
-              <Navigate to="/login" /> // Redirect to login if not authenticated
-            )
-          }
-        /> */}
-
-        {/* User Routes */}
-        {/* <Route
-          path="/"
-          element={
-            isAuthenticated && role === "user" ? (
-              <AuthLayout />
-            ) : (
-              <Navigate to="/login" />
-            )
-          }
-        >
-          <Route path="/tickets" element={<UserTickets />} />
-          <Route
-            path="/tickets/:ticketID"
-            element={<UserTicketDetail />}
-          />
-          <Route path="/profile" element={<Profile />} />
-        </Route> */}
-
-        {/* Admin Routes */}
-        {/* <Route
-          path="/admin"
-          element={
-            isAuthenticated &&
-            (role === "admin" ||
-              role === "manager" ||
-              role === "teamMember") ? (
-              <AuthLayout />
-            ) : (
-              <Navigate to="/login" />
-            )
-          }
-        >
-          <Route path="/admin/tickets" element={<AdminTickets />} />
-          <Route
-            path="/admin/tickets/:ticketID"
-            element={<AdminTicketDetail />}
-          />
-          <Route path="/admin/profile" element={<Profile />} />
-        </Route> */}
-
-        
+        {/* Use the PrivateRoute component to handle authentication logic */}
+        <Route path="/rooms" element={<PrivateRoute element={<ChatRoom />} />} />
+        <Route path="/rooms/:chatRoomId" element={<PrivateRoute element={<ChatRoom />} />} />
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
   );
@@ -88,3 +67,8 @@ const App = () => {
 
 export default App;
 
+const PrivateRoute = ({ element }) => {
+  const { isAuthenticated } = useAuth(); // Get authentication state from the context
+
+  return isAuthenticated ? element : <Navigate to="/" />;
+};

@@ -1,0 +1,1 @@
+1. use socket-in-build-room feature for send messages.

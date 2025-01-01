@@ -9,6 +9,10 @@ const cors = require("cors");
 const { corsOptions } = require("./config/constant.js");
 const { socketAuthenticator } = require("./middlewares/socketAuthenticator.js");
 const chatRoutes = require("./routes/chatRoutes");
+const { NEW_MESSAGE, NEW_MESSAGE_ALERT } = require("./config/event.js");
+const { v4 : uuid } = require("uuid");
+const Message = require("./models/Message.js");
+const { getSockets } = require("./config/features.js");
 
 const userSocketIDs = new Map();
 
@@ -51,6 +55,39 @@ io.on("connection", (socket) => {
   const user = socket.user;
   userSocketIDs.set(user._id.toString(), socket.id);
 
+  socket.on(NEW_MESSAGE, async ({ chatRoomId, members, message }) => {
+    const messageForDb = {
+      chatRoomId,
+      sender: user._id,
+      content: message,
+    };
+
+    const messageForRealTime = {
+      _id: uuid(),
+      content: message,
+      sender: {
+        _id: user._id,
+        name: user.name,
+      },
+      chatRoomId,
+      createdAt: new Date().toISOString(),
+    };
+
+    const memberSockets = getSockets(members);
+    io.to(memberSockets).emit(NEW_MESSAGE, {
+      chatRoomId,
+      message: messageForRealTime,
+    });
+
+    io.to(memberSockets).emit(NEW_MESSAGE_ALERT, { chatRoomId });
+
+    try {
+      await Message.create(messageForDb);
+    } catch (err) {
+      throw new Error(err);
+    }
+  });
+
   socket.on("disconnect", () => {
     console.log("user disconnected", socket.id);
   });
@@ -58,3 +95,5 @@ io.on("connection", (socket) => {
 
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+
+module.exports = { userSocketIDs };
