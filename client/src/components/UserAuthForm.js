@@ -29,12 +29,16 @@ function UserAuthForm() {
   const navigate = useNavigate();
 
 
+
   useEffect(() => {
-    if (isAuthenticated && role === "User") {
-      navigate("/rooms"); 
-    } else if (isAuthenticated && role !== "User") {
-      navigate("/admin"); 
+    if(isAuthenticated){
+      navigate('/chat')
     }
+    // if (isAuthenticated && role === "User") {
+    //   navigate("/rooms"); 
+    // } else if (isAuthenticated && role !== "User") {
+    //   navigate("/rooms"); 
+    // }
   }, [isAuthenticated, role, navigate]); 
 
   // Handles tab change (Login or Sign Up)
@@ -53,7 +57,6 @@ function UserAuthForm() {
     try {
       setLoading(true);
       const response = await loginUser(formData.email, formData.password);
-      console.log(response);
       if(response.data.success){
         login(response.data.user);
       }
@@ -75,7 +78,6 @@ function UserAuthForm() {
         formData.email,
         formData.password
       );
-      console.log(response);
       setSuccessMessage("Sign-up successful! Please log in.");
       setOpenSnackbar(true);
     } catch (error) {

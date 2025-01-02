@@ -1,7 +1,7 @@
 import React from "react";
 import { Box, Typography, Paper } from "@mui/material";
 
-const Messages = () => {
+const Messages = ({ messages }) => {
   return (
     <Paper
       elevation={2}
@@ -14,24 +14,19 @@ const Messages = () => {
         flexDirection: "column",
       }}
     >
-      <Box sx={{ mb: 2 }}>
-        <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-          Username
-        </Typography>
-        <Typography variant="body2" sx={{ mb: 1 }}>
-          Message text
-        </Typography>
-        <Typography variant="caption">10:30 AM</Typography>
-      </Box>
-      <Box sx={{ textAlign: "right", mb: 2 }}>
-        <Typography variant="body1" sx={{ fontWeight: "bold" }}>
-          You
-        </Typography>
-        <Typography variant="body2" sx={{ mb: 1 }}>
-          Your message text
-        </Typography>
-        <Typography variant="caption">10:32 AM</Typography>
-      </Box>
+      {messages.map((message) => (
+        <Box key={message.id} sx={{ mb: 2, textAlign: message.sender === "you" ? "right" : "left" }}>
+          <Typography variant="body1" sx={{ fontWeight: "bold" }}>
+            {message.sender === "you" ? "You" : message.sender}
+          </Typography>
+          <Typography variant="body2" sx={{ mb: 1 }}>
+            {message.content}
+          </Typography>
+          <Typography variant="caption">
+            {new Date(message.timestamp).toLocaleTimeString()}
+          </Typography>
+        </Box>
+      ))}
     </Paper>
   );
 };

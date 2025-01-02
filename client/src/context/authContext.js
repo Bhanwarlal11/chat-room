@@ -1,13 +1,11 @@
 // authContext.js
-import React, { createContext, useState, useContext, useEffect } from 'react';
-import { getMyProfile } from '../api/api';
-import Cookies from 'js-cookie';
-
+import React, { createContext, useState, useContext, useEffect } from "react";
+import { getMyProfile } from "../api/api";
+import Cookies from "js-cookie";
 
 // Create the authentication context
 const AuthContext = createContext();
 
-// Custom hook to use authentication context
 // export const useAuth = () => useContext(AuthContext);
 export const useAuth = () => {
   const context = useContext(AuthContext);
@@ -21,17 +19,16 @@ export const useAuth = () => {
 export const AuthProvider = ({ children }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [user, setUser] = useState(null);
-  const [role,setRole] = useState(null);
+  const [role, setRole] = useState(null);
 
   useEffect(() => {
     const checkAuthStatus = async () => {
-      const token = Cookies.get('token'); // Get token from cookies
+      const token = Cookies.get("token"); // Get token from cookies
 
       if (token) {
         try {
           // Send a request to check if the token in cookies is valid
           const response = await getMyProfile(); // Assume this makes an API call to validate the token
-          console.log(response.data.user)
 
           if (response.data.success) {
             setIsAuthenticated(true);
@@ -58,13 +55,11 @@ export const AuthProvider = ({ children }) => {
     checkAuthStatus();
   }, []); // Empty dependency array, so it runs once on mount
 
-
   // Login function to update the authentication state
   const login = (userData) => {
     setIsAuthenticated(true);
     setUser(userData);
     setRole(userData.role);
-
   };
 
   // Logout function to clear the authentication state
@@ -75,7 +70,9 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, user,role, login, logout }}>
+    <AuthContext.Provider
+      value={{ isAuthenticated, user, role, login, logout }}
+    >
       {children}
     </AuthContext.Provider>
   );

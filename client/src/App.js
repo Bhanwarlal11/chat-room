@@ -10,7 +10,6 @@
 // import ChatRoom from "./pages/ChatRoom.js";
 // import NotFound from "./pages/NotFound.js";
 
-
 // const App = () => {
 
 //   return (
@@ -38,7 +37,6 @@
 //   );
 // };
 
-
 import React from "react";
 import { useAuth } from "./context/authContext";
 import {
@@ -46,10 +44,12 @@ import {
   Routes,
   Route,
   Navigate,
+  Outlet,
 } from "react-router-dom";
 import Login from "./pages/Login.js";
 import ChatRoom from "./pages/ChatRoom.js";
 import NotFound from "./pages/NotFound.js";
+import { SocketProvider } from "./socket.js";
 
 const App = () => {
   return (
@@ -57,8 +57,17 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Login />} />
         {/* Use the PrivateRoute component to handle authentication logic */}
-        <Route path="/rooms" element={<PrivateRoute element={<ChatRoom />} />} />
-        <Route path="/rooms/:chatRoomId" element={<PrivateRoute element={<ChatRoom />} />} />
+
+        <Route
+          element={
+            <SocketProvider>
+              <PrivateRoute />
+            </SocketProvider>
+          }
+        >
+          <Route path="/chat" element={<ChatRoom />} />
+          <Route path="/chat/:chatRoomId" element={<ChatRoom />} />
+        </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>
     </Router>
@@ -70,5 +79,5 @@ export default App;
 const PrivateRoute = ({ element }) => {
   const { isAuthenticated } = useAuth(); // Get authentication state from the context
 
-  return isAuthenticated ? element : <Navigate to="/" />;
+  return isAuthenticated ? <Outlet /> : <Navigate to="/" />;
 };
