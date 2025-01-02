@@ -7,6 +7,7 @@ const {
   getJoinedRooms,
   joinRoom,
   deleteRoom,
+  getAvailableRooms,
 } = require("../controllers/chatController.js");
 
 const router = express.Router();
@@ -28,5 +29,6 @@ router.post("/rooms/:chatRoomId/join", authenticateJWT, joinRoom);
 
 // Delete a room and its messages
 router.delete("/rooms/:chatRoomId", authenticateJWT, deleteRoom);
+router.get("/available-rooms", authenticateJWT, getAvailableRooms);
 
 module.exports = router;

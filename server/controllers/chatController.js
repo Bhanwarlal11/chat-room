@@ -48,14 +48,13 @@ const getAllRooms = async (req, res) => {
 const createRoom = async (req, res) => {
   try {
     const { name } = req.body;
+    console.log(name);
 
     if (!name) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          message: "Name are required",
-        });
+      return res.status(400).json({
+        success: false,
+        message: "Name are required",
+      });
     }
 
     const newRoom = new ChatRoom({ name });
@@ -72,7 +71,7 @@ const createRoom = async (req, res) => {
 // Get all rooms a user has joined
 const getJoinedRooms = async (req, res) => {
   try {
-    const userId  = req.user; // Assuming req.user is populated with authenticated user
+    const userId = req.user; // Assuming req.user is populated with authenticated user
     const rooms = await ChatRoom.find({ participants: userId });
     res.status(200).json({ success: true, rooms });
   } catch (error) {
@@ -86,9 +85,7 @@ const getJoinedRooms = async (req, res) => {
 const joinRoom = async (req, res) => {
   try {
     const { chatRoomId } = req.params;
-    const  userId  = req.user; // Assuming req.user is populated with authenticated user
-
-    
+    const userId = req.user; // Assuming req.user is populated with authenticated user
 
     const room = await ChatRoom.findById(chatRoomId);
     if (!room) {
@@ -143,6 +140,29 @@ const deleteRoom = async (req, res) => {
   }
 };
 
+// Get available chat rooms (rooms where the user is not a participant)
+const getAvailableRooms = async (req, res) => {
+  try {
+    const userId = req.user; // Assuming req.user is populated with authenticated user
+
+    // Fetch all chat rooms
+    const rooms = await ChatRoom.find();
+
+    // Filter rooms to return only those where the user is not a participant
+    const availableRooms = rooms.filter(
+      (room) => !room.participants.includes(userId)
+    );
+
+    res.status(200).json({ success: true, rooms: availableRooms });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Failed to fetch available rooms",
+      error,
+    });
+  }
+};
+
 module.exports = {
   getMessages,
   getAllRooms,
@@ -150,4 +170,5 @@ module.exports = {
   getJoinedRooms,
   joinRoom,
   deleteRoom,
+  getAvailableRooms,
 };

@@ -10,7 +10,7 @@ const { corsOptions } = require("./config/constant.js");
 const { socketAuthenticator } = require("./middlewares/socketAuthenticator.js");
 const chatRoutes = require("./routes/chatRoutes");
 const { NEW_MESSAGE, NEW_MESSAGE_ALERT } = require("./config/event.js");
-const { v4 : uuid } = require("uuid");
+const { v4: uuid } = require("uuid");
 const Message = require("./models/Message.js");
 const { getSockets } = require("./config/features.js");
 
